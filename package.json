@@ -1,0 +1,17 @@
+{
+  "name": "focus-flow",
+  "version": "1.0.0",
+  "description": "实现前端代码中间件化，利用线程概念实现防抖",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "js",
+    "grace",
+    "flow",
+    "thread"
+  ],
+  "author": "mwc",
+  "license": "ISC"
+}
