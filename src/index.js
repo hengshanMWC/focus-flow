@@ -34,15 +34,15 @@ export default class FocusFlow {
 		return this.basic.length
 	}
 	//判断线程池是否有位置
-	get state(){
+	get ram(){
 		return this.guard && ( this.threadMax > this.threads.length )
 	}
-	/***
+	/**
 	 * 收集管道
-	 * @param: {String|Function|FocusFlow} sign String：sign|Function：回调函数|FocusFlow：合并管道函数
-	 * @param: {Function|Object} callback 回调函数|函数this}
-	 * @param: {Object} hand 函数的this
-	 * @return {Object}
+	 * @param {String|Function|FocusFlow} sign 标记|回调函数|FocusFlow实例，用来合并管道函数
+	 * @param {Function|Object} callback 回调函数|函数this
+	 * @param {Object} hand 函数的this
+	 * @return {Object} this
 	 * */
   use(sign, callback, hand) {
     let arg = arguments
@@ -78,7 +78,7 @@ export default class FocusFlow {
 	/**
 	 * 抛错管道
 	 * @param {Function} callback 
-	 * @return {Object} 
+	 * @return {Object} this 
 	 */
 	error(callback){
 		let basic = this.basic
@@ -93,7 +93,7 @@ export default class FocusFlow {
   /**
 	 * 成功管道
 	 * @param {Function} callback 
-	 * @return {Object} 
+	 * @return {Object} this 
 	 */
 	success(callback){
 		return this.isState('success', callback)
@@ -101,7 +101,7 @@ export default class FocusFlow {
 	/**
 	 * 失败管道
 	 * @param {Function} callback 
-	 * @return {Object} 
+	 * @return {Object} this 
 	 */
 	fail(callback){
 		return this.isState('fail', callback)
@@ -109,7 +109,7 @@ export default class FocusFlow {
 	/**
 	 * 结束管道
 	 * @param {Function} callback 
-	 * @return {Object} 
+	 * @return {Object} this 
 	 */
 	end(callback){
 		let basic = this.basic
@@ -126,7 +126,7 @@ export default class FocusFlow {
 	 * 成功失败的方法
 	 * @param {String} state 
 	 * @param {Function} callback 
-	 * @return {Object}
+	 * @return {Object} this
 	 * @private	 
 	 */
 	isState(state, callback){
@@ -141,7 +141,7 @@ export default class FocusFlow {
    * 执行管道流
    * @param {Object|String|Number} ctx {object上下文内容|any管道标记}
    * @param {Object|String|Number} sign {object上下文内容|any管道标记}
-	 * @return {Object} 
+	 * @return {Object} this 
    */
 	start(ctx, sign){
 		if(this.inspect()) return this
@@ -152,12 +152,15 @@ export default class FocusFlow {
 		thread.next(sign)
 		return this
 	}
-	//判断线程池是否满员，满员则清除失活的线程
+	/**
+	 * 判断线程池是否满员，满员则清除失活的线程
+	 * @return {Boolean}
+	 */
 	inspect(){
-		if(!this.state) {
-      this.clean()
-      return true
-    }
+		if(!this.ram) {
+      return !this.clean()
+		}
+		return false
 	}
 	/**
 	 * 目标管道，有则进入，没有则下一个
@@ -205,15 +208,19 @@ export default class FocusFlow {
 	}
 	/**
 	 * 关闭线程池
+	 * @return {Object} this
 	 */
   close() {
-    this.guard = false;
+		this.guard = false;
+		return this
   }
 	/**
 	 * 打开线程池
+	 * @return {Object} this
 	 */
   open() {
-    this.guard = true;
+		this.guard = true;
+		return this		
   }
 	/**
    * 通过标记获取管道下标
@@ -246,8 +253,7 @@ export default class FocusFlow {
 	}
 	/**
 	 * 清理线程池
-	 * @return {Object}
-	 * @private
+	 * @return {Object} this
 	 */
 	closeThreads(){
 		this.threads = [];
@@ -255,19 +261,18 @@ export default class FocusFlow {
 	}
 	/**
 	 * 清理过期的线程
-	 * @return {Boolean}
-	 * @private
+	 * @return {Boolean} 是否有过期的线程清理成功
 	 */
 	clean(){
 		let oldLen = this.threads.length
 		this.threads = this.threads.filter(thread => thread.ctx.$info.life > Date.now())
-		return oldLen >= this.threads.length
+		return oldLen < this.threads.length
 	}
 	/**
 	 * 合并其他FocusFlow的管道
 	 * @param {FocusFlow} ff 
 	 * @param {Object} [hand = this.hand]
-	 * @return {Object}
+	 * @return {Object} this
 	 * @private
 	 */
 	docking(ff, hand = this.hand){
