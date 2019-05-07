@@ -1,6 +1,6 @@
 import Thread from './thread.js'
 export default class FocusFlow {
-	static _id = 0;//每次生成线程+1
+	// static _id = 0;//每次生成线程+1
 	constructor(param = {}){
 		this.pond = []//管道仓库
     this.threads = [] //线程池
@@ -18,7 +18,7 @@ export default class FocusFlow {
 	}
   // 初始化状态函数
   junction(){
-    function template(ctx,next){
+    function template(ctx, next){
       next()
     }
     //水流（线程）必经之地
@@ -27,7 +27,7 @@ export default class FocusFlow {
     .error(function (error) {console.log(error)})//报错触发
 		.success(template)//sign为true
     .fail(template)//sign为false
-    .end(function () {})//sign为null
+		.end(function () {})//sign为null
   }
 	//管道的数量
 	get length(){
@@ -83,9 +83,8 @@ export default class FocusFlow {
 	error(callback){
 		let basic = this.basic
 		let fn = async error => {
-			await callback(error)
-			//end后删除线程
       this.closeThread(thread)
+			await callback(error)
 		}
 		basic.error = fn
 		return this
@@ -114,9 +113,9 @@ export default class FocusFlow {
 	end(callback){
 		let basic = this.basic
 		let fn = async thread => {
-			await callback(thread.ctx)
 			//end后删除线程
       this.closeThread(thread)
+			await callback(thread.ctx)
 		}
 		basic.end = fn
 		return this
@@ -131,8 +130,8 @@ export default class FocusFlow {
 	 */
 	isState(state, callback){
 		async function fnState(thread) {
-			await callback(thread.ctx, thread.$next, thread.$close)
 			thread.ctx.$info.sign = null
+			await callback(thread.ctx, thread.$next, thread.$close)
 		}
 		this.basic[state] = fnState.bind(this)
 		return this
@@ -143,13 +142,13 @@ export default class FocusFlow {
    * @param {Object|String|Number} sign {object上下文内容|any管道标记}
 	 * @return {Object} this 
    */
-	start(ctx, sign){
+	async start(ctx, sign){
 		if(this.inspect()) return this
 		if(typeof ctx !== 'object'){
 			[ ctx, sign ] = [ sign, ctx ]
 		}
 		let thread = this.createThread(ctx, sign)
-		thread.next(sign)
+		await thread.next(sign)
 		return this
 	}
 	/**
@@ -280,3 +279,4 @@ export default class FocusFlow {
 		return this;
 	}
 }
+FocusFlow._id = 0
