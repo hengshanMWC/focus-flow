@@ -26,8 +26,8 @@ export default class Thread {
 	}
 	/**
 	* 执行下一个管道
-	* @param {FocusFlow|String} ff {FocusFlow跨管道|管道标记}
-	* @param {FocusFlow|Strin} sign,当ff为FocusFlow，则为start的key
+	* @param {FocusFlow|String} ff FocusFlow跨管道|管道标记
+	* @param {FocusFlow|Strin} sign 当ff为FocusFlow，则为start的key
 	* @private 
 	*/
 	async next(ff, sign){

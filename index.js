@@ -38,9 +38,9 @@ export default class FocusFlow {
 	}
 	/***
 	 * 收集管道
-	 * @param: {String|Function|FocusFlow} sign {String sign|Function 回调函数|FocusFlow 合并函数}
-	 * @param: {Function|Object} callback {回调函数|函数this}
-	 * @param: {Object} hand {函数的this}
+	 * @param: {String|Function|FocusFlow} sign String：sign|Function：回调函数|FocusFlow：合并管道函数
+	 * @param: {Function|Object} callback 回调函数|函数this}
+	 * @param: {Object} hand 函数的this
 	 * @return {Object}
 	 * */
   use(sign, callback, hand) {
@@ -236,6 +236,8 @@ export default class FocusFlow {
 	 * 合并其他FocusFlow的管道
 	 * @param {FocusFlow} ff 
 	 * @param {Object} [hand = this.hand]
+	 * @return {Object}
+	 * @private
 	 */
 	docking(ff, hand = this.hand){
     ff.pond.forEach(obj => this.use(obj.sign, obj.callback, hand))
