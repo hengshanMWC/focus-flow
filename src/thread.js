@@ -15,7 +15,7 @@ export default class Thread {
    */
 	initInfo(ff){
 		let $info = {
-			id: FocusFlow._id ++,//线程id
+			id: FocusFlow._id++,//线程id
 			ff,
 			sign: 0,//从0开始
 		}
@@ -34,10 +34,8 @@ export default class Thread {
 		if(ff instanceof FocusFlow) return this.span(ff, sign)
 		let $ff = this.ctx.$info.ff
 		if($ff.state) this.active()
-		if(ff === true){
-      await $ff.basic.success(this)
-		} else if(ff === false){
-      await $ff.basic.error(this)
+		if(typeof ff === 'boolean'){
+      await $ff.run(this, ff)
 		} else if(ff){
 			await $ff.nextStart(this, ff)
 		} else {

@@ -24,8 +24,9 @@ export default class FocusFlow {
     //水流（线程）必经之地
     this.basic = {}
 		this
+    .error(function (error) {console.log(error)})//报错触发
 		.success(template)//sign为true
-    .error(template)//sign为false
+    .fail(template)//sign为false
     .end(function () {})//sign为null
   }
 	//管道的数量
@@ -73,7 +74,22 @@ export default class FocusFlow {
     return typeof hand === 'object' && hand !== null 
       ? callback.bind(hand)
       : callback
-  }
+	}
+	/**
+	 * 抛错管道
+	 * @param {Function} callback 
+	 * @return {Object} 
+	 */
+	error(callback){
+		let basic = this.basic
+		let fn = async error => {
+			await callback(error)
+			//end后删除线程
+      this.closeThread(thread)
+		}
+		basic.error = fn
+		return this
+	}
   /**
 	 * 成功管道
 	 * @param {Function} callback 
@@ -87,8 +103,8 @@ export default class FocusFlow {
 	 * @param {Function} callback 
 	 * @return {Object} 
 	 */
-	error(callback){
-		return this.isState('error', callback)
+	fail(callback){
+		return this.isState('fail', callback)
 	}
 	/**
 	 * 结束管道
@@ -97,7 +113,7 @@ export default class FocusFlow {
 	 */
 	end(callback){
 		let basic = this.basic
-		let fn = async (thread) => {
+		let fn = async thread => {
 			await callback(thread.ctx)
 			//end后删除线程
       this.closeThread(thread)
@@ -105,6 +121,7 @@ export default class FocusFlow {
 		basic.end = fn
 		return this
 	}
+	
 	/**
 	 * 成功失败的方法
 	 * @param {String} state 
@@ -160,32 +177,46 @@ export default class FocusFlow {
 	/**
 	 * 执行管道
 	 * @param {Thread} thread 
+	 * @param {Boolean} state 
 	 * @private
 	 */
-	async run(thread){
+	async run(thread, state){
 		let pond = this.pond
 		let ctx = thread.ctx
-		//为null则end
-		if(ctx.$info.sign === null){
-			await this.basic.end(thread)
-		//还有管道
-		} else if (ctx.$info.sign < pond.length){
-			await pond[ctx.$info.sign++].callback(ctx, thread.$next, thread.$close)
-		//管道完成
-		} else {
-			await this.basic.success(thread, thread.$close);
+		let surplus = ctx.$info.sign < pond.length
+		try {
+			if(ctx.$info.sign === null){
+				//为null则end
+				await this.basic.end(thread)
+			} else if(state === false){
+				//管道失败
+				await this.basic.fail(thread, thread.$close);
+			} else if(!surplus || state === true){
+				//管道完成
+				await this.basic.success(thread, thread.$close);
+			} else if (surplus){
+				//还有管道
+				await pond[ctx.$info.sign++].callback(ctx, thread.$next, thread.$close)
+			}
+		} catch(error) {
+			this.basic.error(error)
 		}
+		
 	}
-  //关闭线程池
+	/**
+	 * 关闭线程池
+	 */
   close() {
     this.guard = false;
   }
-  //打开线程池
+	/**
+	 * 打开线程池
+	 */
   open() {
     this.guard = true;
   }
 	/**
-   * 通过标记获取下一个管道的坐标
+   * 通过标记获取管道下标
    * @param {String|Number} sign 标记
 	 * @return {Number}
 	 * @private
