@@ -17,7 +17,7 @@ export default class Thread {
 		let $info = {
 			id: FocusFlow._id++,//线程id
 			ff,
-			sign: 0,//从0开始
+			index: 0,//从0开始
 		}
 		Object.defineProperty(this.ctx, '$info', {
 			value: $info,
@@ -26,14 +26,15 @@ export default class Thread {
 	}
 	/**
 	* 执行下一个管道
-	* @param {FocusFlow|String} ff FocusFlow跨管道|管道标记
-	* @param {FocusFlow|Strin} sign 当ff为FocusFlow，则为start的key
-	* @private 
+	* @param {FocusFlow|String|Number|Boolean} ff FocusFlow跨管道|管道标记
+	* @param {String|Number|Boolean} sign 管道标记
+	* @private
 	*/
 	async next(ff, sign){
 		if(ff instanceof FocusFlow) return this.span(ff, sign)
 		let $ff = this.ctx.$info.ff
-		if($ff.state) this.active()
+		this.active()
+		// if($ff.ram) this.active()
 		if(typeof ff === 'boolean'){
       await $ff.run(this, ff)
 		} else if(ff){
@@ -51,6 +52,7 @@ export default class Thread {
 	span(ff, sign){
     this.close()
 		ff.start(this.ctx, sign)
+		return this;
 	}
 	//更新线程寿命，防止被回收
 	active(){

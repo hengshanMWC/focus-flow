@@ -1,7 +1,7 @@
 {
   "name": "focus-flow",
   "version": "1.0.0",
-  "description": "前端代码中间件化，利用线程概念实现防抖",
+  "description": "让前端代码变成一条流",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,7 +20,7 @@
   "license": "ISC",
   "scripts": {
     "docs": "jsdoc -c jsdoc.conf.json -t ./node_modules/ink-docstrap/template -R README.md  -d docs",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",

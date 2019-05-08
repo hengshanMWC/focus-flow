@@ -29,11 +29,15 @@ export default class FocusFlow {
     .fail(template)//sign为false
 		.end(function () {})//sign为null
   }
-	//管道的数量
+	/**
+	 * 返回管道的数量
+	 */
 	get length(){
-		return this.basic.length
+		return this.pond.length
 	}
-	//判断线程池是否有位置
+	/**
+	 * 判断线程池是否有位置
+	 */
 	get ram(){
 		return this.guard && ( this.threadMax > this.threads.length )
 	}
@@ -41,7 +45,7 @@ export default class FocusFlow {
 	 * 收集管道
 	 * @param {String|Function|FocusFlow} sign 标记|回调函数|FocusFlow实例，用来合并管道函数
 	 * @param {Function|Object} callback 回调函数|函数this
-	 * @param {Object} hand 函数的this
+	 * @param {Object} hand 函数指向的this
 	 * @return {Object} this
 	 * */
   use(sign, callback, hand) {
@@ -82,7 +86,7 @@ export default class FocusFlow {
 	 */
 	error(callback){
 		let basic = this.basic
-		let fn = async error => {
+		let fn = async (error, thread) => {
       this.closeThread(thread)
 			await callback(error)
 		}
@@ -130,7 +134,7 @@ export default class FocusFlow {
 	 */
 	isState(state, callback){
 		async function fnState(thread) {
-			thread.ctx.$info.sign = null
+			thread.ctx.$info.index = null
 			await callback(thread.ctx, thread.$next, thread.$close)
 		}
 		this.basic[state] = fnState.bind(this)
@@ -138,8 +142,8 @@ export default class FocusFlow {
 	}
 	/**
    * 执行管道流
-   * @param {Object|String|Number} ctx {object上下文内容|any管道标记}
-   * @param {Object|String|Number} sign {object上下文内容|any管道标记}
+   * @param {Object|String|Number|Boolean} ctx object上下文内容|any管道标记
+   * @param {Object|String|Number|Boolean} sign object上下文内容|any管道标记
 	 * @return {Object} this 
    */
 	async start(ctx, sign){
@@ -147,7 +151,7 @@ export default class FocusFlow {
 		if(typeof ctx !== 'object'){
 			[ ctx, sign ] = [ sign, ctx ]
 		}
-		let thread = this.createThread(ctx, sign)
+		let thread = this.createThread(ctx)
 		await thread.next(sign)
 		return this
 	}
@@ -170,9 +174,9 @@ export default class FocusFlow {
 	async nextStart(thread, sign){
 		let index = this.matching(sign)
 		if(index === -1){
-			thread.ctx.$info.sign++
+			thread.ctx.$info.index++
 		} else {
-			thread.ctx.$info.sign = index
+			thread.ctx.$info.index = index
 		}
 		await this.run(thread)
 	}
@@ -185,25 +189,24 @@ export default class FocusFlow {
 	async run(thread, state){
 		let pond = this.pond
 		let ctx = thread.ctx
-		let surplus = ctx.$info.sign < pond.length
+		let surplus = ctx.$info.index < pond.length
 		try {
-			if(ctx.$info.sign === null){
+			if(ctx.$info.index === null){
 				//为null则end
 				await this.basic.end(thread)
 			} else if(state === false){
 				//管道失败
-				await this.basic.fail(thread, thread.$close);
+				await this.basic.fail(thread);
 			} else if(!surplus || state === true){
 				//管道完成
-				await this.basic.success(thread, thread.$close);
+				await this.basic.success(thread);
 			} else if (surplus){
 				//还有管道
-				await pond[ctx.$info.sign++].callback(ctx, thread.$next, thread.$close)
+				await pond[ctx.$info.index++].callback(ctx, thread.$next, thread.$close)
 			}
 		} catch(error) {
-			this.basic.error(error)
+			this.basic.error(error, thread)
 		}
-		
 	}
 	/**
 	 * 关闭线程池
@@ -222,13 +225,15 @@ export default class FocusFlow {
 		return this		
   }
 	/**
-   * 通过标记获取管道下标
+   * 通过标记获取管道下标,如果是Number则直接返回
    * @param {String|Number} sign 标记
 	 * @return {Number}
 	 * @private
    */
 	matching(sign){
-		return this.pond.findIndex(obj => obj.sign === sign)
+		return typeof sign === 'number' 
+			? sign  
+			: this.pond.findIndex(obj => obj.sign === sign)
 	}
   /**
    * 创建线程
@@ -260,7 +265,7 @@ export default class FocusFlow {
 	}
 	/**
 	 * 清理过期的线程
-	 * @return {Boolean} 是否有过期的线程清理成功
+	 * @return {Boolean} 是否有过期的线程被清理
 	 */
 	clean(){
 		let oldLen = this.threads.length
