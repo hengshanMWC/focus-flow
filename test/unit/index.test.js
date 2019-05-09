@@ -1,4 +1,4 @@
-import FF from '../../src/index'
+import FF from '../../dist/focusFlow.es'
 // beforeAll(() => {
 //   jest.useFakeTimers()
 // })

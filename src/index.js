@@ -1,6 +1,6 @@
 import Thread from './thread.js'
 export default class FocusFlow {
-	// static _id = 0;//每次生成线程+1
+	static _id = 0; //每次生成线程+1
 	constructor(options = {}){
 		this.pond = []//管道仓库
     this.threads = [] //线程池
@@ -30,13 +30,13 @@ export default class FocusFlow {
 		.end(function () {})//sign为null
   }
 	/**
-	 * 返回管道的数量
+	 * 返回管道的数量（不包括基本管道）
 	 */
 	get length(){
 		return this.pond.length
 	}
 	/**
-	 * 判断线程池是否有位置
+	 * 判断线程池的状态
 	 */
 	get ram(){
 		return this.options.switch && ( this.options.threadMax > this.threads.length )
@@ -210,7 +210,7 @@ export default class FocusFlow {
 		}
 	}
 	/**
-	 * 关闭线程池
+	 * 关闭线程池，剩余的线程会执行完
 	 * @return {Object} this
 	 */
   close() {
@@ -257,7 +257,7 @@ export default class FocusFlow {
 		this.threads.splice(index, 1 + index)
 	}
 	/**
-	 * 清理线程池
+	 * 清空线程池，剩余的线程会执行完
 	 * @return {Object} this
 	 */
 	closeThreads(){
@@ -285,4 +285,4 @@ export default class FocusFlow {
 		return this;
 	}
 }
-FocusFlow._id = 0
+// FocusFlow._id = 0

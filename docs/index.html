@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>DocStrap Index</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.flatly.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">DocStrap</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#clean">clean</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#closeThreads">closeThreads</a></li><li><a href="global.html#end">end</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#inspect">inspect</a></li><li><a href="global.html#length">length</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#ram">ram</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#success">success</a></li><li><a href="global.html#use">use</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+
+
+
+
+
+    <section class="readme-section">
+        <article><h2>focus-flow</h2>
+<p><a href="https://github.com/hengshanMWC/focus-flow"><img src="https://img.shields.io/badge/GitHub-hengshanMWC-green.svg" alt="gitHub"></a>  <a href="https://www.npmjs.com/package/focus-flow"><img src="https://img.shields.io/npm/v/focus-flow.svg" alt="Version"></a></p>
+<p>让代码变成一条流</p>
+<h2>Features</h2>
+<ul>
+<li>将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，从而降低耦合度</li>
+<li>模仿线程概念，实现防抖</li>
+<li>支持async/await</li>
+</ul>
+<h2>Installing</h2>
+<p><code>npm i focus-flow</code></p>
+<h2>Chestnut</h2>
+<p>曾几何时，你有没有被反复无常的需求弄得心烦意乱。</p>
+<p>举个例子：一个商城代理模块，当代理要发展下线的时候，要通过二维码让新用户扫码，才可以绑定用户。</p>
+<pre class="prettyprint source"><code>function isRegister(){
+  if(is){
+    getUserInfo()
+  } else {
+    register()
+  }
+}
+agent(id){
+  //是否有代理id
+  if(id) 
+}
+register(){
+  agent()
+  getUserInfo()
+}
+</code></pre>
+<p>好不容易把业务写好了，过了数天，产品：“小马啊，发展下线这个逻辑改成-----非代理用户，第一次扫代理二维码的时候就成为代理的下线”。</p>
+<p>这时候又得屁颠颠的从register函数上找到agent注释掉，放到合适的地方。</p>
+<p>又过了数天，产品走过来一边帮按摩一边说：”小马啊，发展下线这个逻辑改成......“（产品猝</p>
+<p>遇到类似这样的变更，都得到之前的业务逻辑上来找这函数，如果时间一长，或者代码一庞大，改起来就会变得缩手缩脚，特别是别人来接手，函数调来调去，看起来不知道那是头那是尾。</p>
+<p>正好之前学node的时候接触过koa，洋葱般的中间件方式是那么的让人着迷，一个个中间件通过维护上下文ctx来降低函数间的耦合度。那正是我想要的，那何不把它移植到前端来？</p>
+<p>然后搞搞，终于把业务代码变成了下面这样</p>
+<pre class="prettyprint source"><code>//每个回调函数会接受到3个参数，分别是ctx、next、close
+const master = new FF()
+  .use(isRegister) //是否注册
+  .use(register) //注册
+  .use(getUserInfo) //获取用户
+  .use(agent) //成为下线
+//启动的时候
+master.start()
+</code></pre>
+<p>可读性变得更强，并且修改变动每条管道(use的回调函数之为管道)的时候，我们只需要关注ctx即可。</p>
+<p>当然，如果你不想按步就班，你大可next(FocusFlow|Number|String|Boolean)来进行定点执行或跨管道</p>
+<h2>Concept</h2>
+<h3>跨管道</h3>
+<p>何为跨管道？因为有些情景可能不止一条管道分支，宛如git上的一条条不同的分支，正常流程上线用到master分支，但当你要处理bug的时候，有可能就需要建一个bug_dev分支了。同理，当我们的master管道出现正常流程之外的事情，我们可以在回调函数里面是用next(ff2, [sign]),就像git checkout ff2那样，让一个专门处理非正常流程的分支去处理这些逻辑，这样整个业务都变得侧层级分明。</p>
+<h3>线程</h3>
+<pre class="prettyprint source"><code>getList(){
+  if(close) return 
+  close = true
+  //异步逻辑，完成后把close设置成false
+}
+</code></pre>
+<p>上拉加载的时候，用节流去限制请求接口次数。不知道你有没有写过类似代码，或者用闭包去实现。如上功能，FF也可以实现。</p>
+<pre class="prettyprint source"><code>const ff = new FF()
+  .use(getList(ctx, next){
+    // 异步逻辑,完成后next
+    // 还有一个状况，假设判断后台的所有列表数据已经返回完了，那么再触发这段管道就没有意义了。这时候我们就可以使用ctx.$info.ff.close关闭掉线程池。
+  })
+ff.start({接口参数})
+</code></pre>
+<p>每当ff使用start(成功使用)的时候，内部就会新建一条线程，该线程会负责该次start的请求。而ff中的threads是专门用来储存这些线程。</p>
+<pre class="prettyprint source"><code>//默认配置
+new FF({
+  threadMax: 1, //最大线程数
+  switch: true, //是否开放线程池
+  life: 10000, //清理线程的周期，毫秒单位
+  hand: null, //函数this指向
+})
+</code></pre>
+<p><strong>threadMax</strong>：用来限制threads的上限，当达到上限且其中线程都仍活跃，使用start就不会再创建成功，也就意味着该次的start无法成功执行</p>
+<p><strong>switch</strong>：threadMax如果是一个容器，那么switch则是这个容器的开关</p>
+<p><strong>life</strong>：规定线程的寿命，每当回调函数使用next时，都会刷新线程的寿命。线程池会根据线程的寿命去清理掉那些过期的线程。</p>
+<p><strong>hand</strong>：回调函数的全局this指向</p>
+<h2>explain</h2>
+<h3>基本管道</h3>
+<p><strong>success</strong>：next()到底的时候就会触发该管道。当然，你也可以next(true)直接执行成功管道
+<strong>fail</strong>：next(false)的时候触发
+<strong>end</strong>：success和fail的下一个next就是end，而error则是触发完自己的回调函数后，会自动触发end
+<strong>error</strong>：捕获错误管道</p>
+<h3>回调函数接受的参数</h3>
+<p><strong>ctx</strong>：管道传递的上下文，ff.start(参数)的参数会合并到ctx上。</p>
+<p>$info：</p>
+<ul>
+<li>id: 线程的id</li>
+<li>index：当前管道坐标</li>
+<li>ff: 创建该线程的FF实例</li>
+<li>life: 线程的生命周期</li>
+</ul>
+<hr>
+<p><strong>next</strong>：可传递2个参数。</p>
+<ul>
+<li>第一个参数param是Number类型时，会跳转到第param条管道并执行（没有符合则相当于next()）</li>
+<li>第一个参数param是String类型时，会跳转到标记为param的管道并执行（没有符合则相当于next()）</li>
+<li>第一个参数param是Boolean类型时，会跳转到相应的基本管道并执行</li>
+<li>第一个参数param是FocusFlow类型时，会进行跨管道（相当于FocusFlow的实例.start(当前ctx，第二个参数)），第二个参数重复以上行为</li>
+</ul>
+<hr>
+<p><strong>close</strong>：清理当前执行线程，但线程是还会执行完任务</p>
+<h3>ff.start</h3>
+<p>有时候，当我们执行到某一段逻辑时，因为某些原因中断了流程。当我满足了该条件后，又不想重新由头到尾执行该管道分支，那应该怎么办？我想有同学大概能想到，start(ctx,sign)</p>
+<p>用小程序举个例子：</p>
+<pre class="prettyprint source"><code>const master = new FF()
+export default master
+  .use(userInfo) // 获取微信用户信息
+  .use('code', code) // 获取code
+  .use(openid) // 获取openid
+  .use('myInfo', myInfo) //获取openid
+  .use('register', register) //注册
+</code></pre>
+<p>当有用户没有授权微信用户信息的时候，我们从userInfo跳出，然后用某种方法（个人用发布订阅）触发出授权弹框让他们授权,点击授权后调master.start(用户数据,'code')，直接跳到code管道，然后进行接下来的逻辑。</p>
+<p>顺带一提授权弹框</p>
+<pre class="prettyprint source"><code>//刚刚学小程序的时候，每次页面都要弄个事件函数和布尔值去管理者个组件
+&lt;getUserInfo bindevent=&quot;&quot; hidden=&quot;&quot;>&lt;/getUserInfo>
+//后面用FocusFlow配合发布订阅完全解耦了页面和组件
+&lt;getUserInfo>&lt;/getUserInfo>
+</code></pre></article>
+    </section>
+
+
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.1</a>
+	
+		on 2019-05-09T22:25:22+08:00
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>
