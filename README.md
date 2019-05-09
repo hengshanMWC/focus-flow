@@ -82,14 +82,18 @@ new FF({
 })
 ```
 __threadMax__：用来限制threads的上限，当达到上限且其中线程都仍活跃，使用start就不会再创建成功，也就意味着该次的start无法成功执行
+
 __switch__：threadMax如果是一个容器，那么switch则是这个容器的开关
+
 __life__：规定线程的寿命，每当回调函数使用next时，都会刷新线程的寿命。线程池会根据线程的寿命去清理掉那些过期的线程。
+
 __hand__：函数的全局this指向
 ## explain
 ### 基本管道
 __success__：next()到底的时候就会触发该管道,当然，你也可以next(true)直接执行成功管道
 __fail__：next(false)的时候触发
-__end__：
+__end__：success和fail的下一个next就是end，而error则是触发完自动到end
+__error__：报错管道
 ### 回调函数接受的参数
 __ctx__：管道传递的上下文，ff.start(参数)会附加到ctx上。
 

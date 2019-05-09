@@ -2,8 +2,10 @@ import FF from '../../src/index'
 // beforeAll(() => {
 //   jest.useFakeTimers()
 // })
-function fnError(error){
+function fnError(error, ctx){
   expect(error.name).toBe("ReferenceError")
+  expect(ctx.text).toBe('error')
+  ctx.text = 'null'
 }
 let list = [{name: 'mwc'}]
 function getList(){
@@ -62,7 +64,7 @@ describe('provide basic', () => {
         ctx
         next()
       })
-      .start({text: 'success'})
+      .start({text: 'error'})
   })
 })
 test('flow span', async done => {

@@ -87,7 +87,8 @@ export default class FocusFlow {
 	error(callback){
 		let basic = this.basic
 		let fn = async (error, thread) => {
-			await callback(error)
+			await callback(error, thread.ctx)
+			thread.ctx.$info.index = null
 			await basic.end(thread)
 		}
 		basic.error = fn
