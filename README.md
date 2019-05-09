@@ -76,13 +76,13 @@ ff.start({接口参数})
 //默认配置
 new FF({
   threadMax: 1, //最大线程数
-  guard: true, //是否开放线程池
+  switch: true, //是否开放线程池
   life: 10000, //清理线程的周期，毫秒单位
   hand: null, //函数this指向
 })
 ```
 __threadMax__：用来限制threads的上限，当达到上限且其中线程都仍活跃，使用start就不会再创建成功，也就意味着该次的start无法成功执行
-__guard__：threadMax如果是一个容器，那么guard则是这个容器的门,
+__switch__：threadMax如果是一个容器，那么switch则是这个容器的开关,
 ## explain
 ### 回调函数接受的参数
 __ctx__：管道传递的上下文
@@ -94,8 +94,8 @@ $info：
 * life: 线程的生命周期
 ***
 __next__：可传递2个参数。
-* 第一个参数param是Number类型时，会跳转到第param条管道并执行
-* 第一个参数param是String类型时，会跳转到标记为param的管道并执行
+* 第一个参数param是Number类型时，会跳转到第param条管道并执行（没有符合则相当于next()）
+* 第一个参数param是String类型时，会跳转到标记为param的管道并执行（没有符合则相当于next()）
 * 第一个参数param是Boolean类型时，会跳转到相应的基本管道并执行
 * 第一个参数param是FocusFlow类型时，会进行跨管道（相当于FocusFlow的实例.start(当前ctx，第二个参数)），第二个参数重复以上行为
 ### start

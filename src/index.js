@@ -10,7 +10,7 @@ export default class FocusFlow {
 	defaults(options){
 		const template = {
 			threadMax: 1, //最大线程数
-			guard: true, //是否开放线程池
+			switch: true, //是否开放线程池
 			life: 10000, //清理线程的周期，毫秒单位
       hand: null, //函数this指向
 		}
@@ -39,7 +39,7 @@ export default class FocusFlow {
 	 * 判断线程池是否有位置
 	 */
 	get ram(){
-		return this.options.guard && ( this.options.threadMax > this.threads.length )
+		return this.options.switch && ( this.options.threadMax > this.threads.length )
 	}
 	/**
 	 * 收集管道
@@ -213,7 +213,7 @@ export default class FocusFlow {
 	 * @return {Object} this
 	 */
   close() {
-		this.options.guard = false;
+		this.options.switch = false;
 		return this
   }
 	/**
@@ -221,7 +221,7 @@ export default class FocusFlow {
 	 * @return {Object} this
 	 */
   open() {
-		this.options.guard = true;
+		this.options.switch = true;
 		return this		
   }
 	/**
