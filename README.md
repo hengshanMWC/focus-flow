@@ -82,10 +82,16 @@ new FF({
 })
 ```
 __threadMax__：用来限制threads的上限，当达到上限且其中线程都仍活跃，使用start就不会再创建成功，也就意味着该次的start无法成功执行
-__switch__：threadMax如果是一个容器，那么switch则是这个容器的开关,
+__switch__：threadMax如果是一个容器，那么switch则是这个容器的开关
+__life__：规定线程的寿命，每当回调函数使用next时，都会刷新线程的寿命。线程池会根据线程的寿命去清理掉那些过期的线程。
+__hand__：函数的全局this指向
 ## explain
+### 基本管道
+__success__：next()到底的时候就会触发该管道,当然，你也可以next(true)直接执行成功管道
+__fail__：next(false)的时候触发
+__end__：
 ### 回调函数接受的参数
-__ctx__：管道传递的上下文
+__ctx__：管道传递的上下文，ff.start(参数)会附加到ctx上。
 
 $info：
 * id: 线程的id
@@ -98,6 +104,8 @@ __next__：可传递2个参数。
 * 第一个参数param是String类型时，会跳转到标记为param的管道并执行（没有符合则相当于next()）
 * 第一个参数param是Boolean类型时，会跳转到相应的基本管道并执行
 * 第一个参数param是FocusFlow类型时，会进行跨管道（相当于FocusFlow的实例.start(当前ctx，第二个参数)），第二个参数重复以上行为
+***
+__close__：清理当前执行线程，但线程是还会执行完任务
 ### start
 
 
