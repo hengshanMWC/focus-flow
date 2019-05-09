@@ -1,20 +1,20 @@
 import Thread from './thread.js'
 export default class FocusFlow {
 	// static _id = 0;//每次生成线程+1
-	constructor(param = {}){
+	constructor(options = {}){
 		this.pond = []//管道仓库
     this.threads = [] //线程池
-    this.defaults(param)
+    this.defaults(options)
     this.junction()
 	}
-	defaults(param){
+	defaults(options){
 		const template = {
-			threadMax: 1,//最大线程数
-			guard: true,//是否开放线程池
-			life: 10000,//清理线程的周期，毫秒单位
+			threadMax: 1, //最大线程数
+			guard: true, //是否开放线程池
+			life: 10000, //清理线程的周期，毫秒单位
       hand: null, //函数this指向
 		}
-		Object.assign(this, template, param)
+		this.options = Object.assign(template, options)
 	}
   // 初始化状态函数
   junction(){
@@ -39,7 +39,7 @@ export default class FocusFlow {
 	 * 判断线程池是否有位置
 	 */
 	get ram(){
-		return this.guard && ( this.threadMax > this.threads.length )
+		return this.options.guard && ( this.options.threadMax > this.threads.length )
 	}
 	/**
 	 * 收集管道
@@ -70,11 +70,11 @@ export default class FocusFlow {
 	/**
 	 * 改变this指向
 	 * @param {Function} callback 
-	 * @param {Object} [hand = this.hand] 
+	 * @param {Object} [hand = this.options.hand] 
 	 * @return {Function}
 	 * @private
 	 */
-  redirect(callback, hand = this.hand){
+  redirect(callback, hand = this.options.hand){
     return typeof hand === 'object' && hand !== null 
       ? callback.bind(hand)
       : callback
@@ -213,7 +213,7 @@ export default class FocusFlow {
 	 * @return {Object} this
 	 */
   close() {
-		this.guard = false;
+		this.options.guard = false;
 		return this
   }
 	/**
@@ -221,7 +221,7 @@ export default class FocusFlow {
 	 * @return {Object} this
 	 */
   open() {
-		this.guard = true;
+		this.options.guard = true;
 		return this		
   }
 	/**
@@ -275,11 +275,11 @@ export default class FocusFlow {
 	/**
 	 * 合并其他FocusFlow的管道
 	 * @param {FocusFlow} ff 
-	 * @param {Object} [hand = this.hand]
+	 * @param {Object} [hand = this.options.hand]
 	 * @return {Object} this
 	 * @private
 	 */
-	docking(ff, hand = this.hand){
+	docking(ff, hand = this.options.hand){
     ff.pond.forEach(obj => this.use(obj.sign, obj.callback, hand))
 		return this;
 	}

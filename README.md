@@ -53,7 +53,36 @@ master.start()
 当然，如果你不想按步就班，你大可next(FocusFlow|Number|String|Boolean)来进行定点执行或跨管道
 ## Concept
 ### 跨管道
-何为跨管道？因为有些情景可能不止一条管道分支。打个比方，我们
+何为跨管道？因为有些情景可能不止一条管道分支，宛如git上的一条条不同的分支，正常流程上线用到master分支，但当你要处理bug的时候，有可能就需要一个bug_dev分支了。同理，当我们的master管道出现正常流程之外的事情，我们可以在回调函数里面是用next(ff2, [sign]),就像git checkout ff2那样，让一个专门处理非正常流程的分支去处理这些逻辑，这样整个业务在宏观上变得层级分明。
+### 线程
+```
+getList(){
+  if(close) return 
+  close = true
+  //异步逻辑，完成后把close设置成false
+}
+```
+上拉加载的时候，用节流去限制请求接口次数。不知道你有没有写过类似代码，或者用闭包去实现。如上功能，FF也可以实现。
+```
+const ff = new FF()
+  .use(getList(ctx, next){
+    //异步逻辑,完成后next
+    //还有一个状况，假设判断后台的所有列表数据已经返回完了，那么再触发这段管道就没有意义了。这时候我们就可以使用ctx.$info.ff.close关闭掉线程池。
+  })
+ff.start({接口参数})
+```
+每当ff使用start(成功使用)的时候，内部就会新建一条线程，该线程会负责该次start的请求。而ff中的threads是专门用来储存这些线程。
+```
+//默认配置
+new FF({
+  threadMax: 1, //最大线程数
+  guard: true, //是否开放线程池
+  life: 10000, //清理线程的周期，毫秒单位
+  hand: null, //函数this指向
+})
+```
+__threadMax__：用来限制threads的上限，当达到上限且其中线程都仍活跃，使用start就不会再创建成功，也就意味着该次的start无法成功执行
+__guard__：threadMax如果是一个容器，那么guard则是这个容器的门,
 ## explain
 ### 回调函数接受的参数
 __ctx__：管道传递的上下文
