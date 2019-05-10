@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1557412568587" clover="3.2.0">
-  <project timestamp="1557412568587" name="All files">
+<coverage generated="1557413996873" clover="3.2.0">
+  <project timestamp="1557413996873" name="All files">
     <metrics statements="566" coveredstatements="412" conditionals="300" coveredconditionals="162" methods="129" coveredmethods="96" elements="995" coveredelements="670" complexity="0" loc="566" ncloc="566" packages="1" files="1" classes="1"/>
-    <file name="focusFlow.es.js" path="D:\mwc\template\rollup\dist\focusFlow.es.js">
+    <file name="focusFlow.es.js" path="D:\mwc\focus-flow\dist\focusFlow.es.js">
       <metrics statements="566" coveredstatements="412" conditionals="300" coveredconditionals="162" methods="129" coveredmethods="96"/>
       <line num="4" count="2" type="stmt"/>
       <line num="7" count="1" type="stmt"/>

@@ -92,13 +92,13 @@ const genConfig  = key => {
         babelrc: false,
         exclude: 'node_modules/**',
         runtimeHelpers: true,
-        presets: [
-          '@babel/preset-env',
+        "presets": [
+          "@babel/preset-env",
         ],
         plugins: [
           "@babel/plugin-proposal-class-properties",
           [
-            "@babel/transform-runtime",
+            "@babel/plugin-transform-runtime",
             {
               "absoluteRuntime": false,
               "corejs": false,

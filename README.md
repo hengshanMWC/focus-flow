@@ -4,7 +4,7 @@
 让代码变成一条流
 ## Features
 * 将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，从而降低耦合度
-* 模仿线程概念，实现防抖
+* 模仿线程概念，实现节流
 * 支持async/await
 ## Installing
 `npm i focus-flow`

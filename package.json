@@ -1,13 +1,13 @@
 {
   "name": "focus-flow",
   "version": "1.0.0",
-  "description": "让前端代码变成一条流",
-  "main": "index.js",
+  "description": "让代码变成一条流",
+  "main": "src/index.js",
   "scripts": {
     "build": "node build/rollup.config.js",
     "docs": "jsdoc -c jsdoc.conf.json -t ./node_modules/ink-docstrap/template -R README.md  -d docs",
     "test:cov": "jest --coverage",
-    "test": "jest --coverage"
+    "test": "jest"
   },
   "keywords": [
     "js",
