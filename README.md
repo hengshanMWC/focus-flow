@@ -2,9 +2,11 @@
 [![gitHub](https://img.shields.io/badge/GitHub-hengshanMWC-green.svg)](https://github.com/hengshanMWC/focus-flow)  [![Version](https://img.shields.io/npm/v/focus-flow.svg)](https://www.npmjs.com/package/focus-flow)
 
 让代码变成一条流
+
+[API Documentation](https://hengshanmwc.github.io/focus-flow/)
 ## Features
 * 将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，从而降低耦合度
-* 模仿线程概念，实现防抖
+* 模仿线程概念，实现节流
 * 支持async/await
 ## Installing
 `npm i focus-flow`
