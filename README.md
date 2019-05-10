@@ -1,14 +1,14 @@
-## focus-flow
+# focus-flow
 [![gitHub](https://img.shields.io/badge/GitHub-hengshanMWC-green.svg)](https://github.com/hengshanMWC/focus-flow)  [![Version](https://img.shields.io/npm/v/focus-flow.svg)](https://www.npmjs.com/package/focus-flow)
 
 让代码变成一条流
-## Features
+# Features
 * 将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，从而降低耦合度
 * 模仿线程概念，实现节流
 * 支持async/await
-## Installing
+# Installing
 `npm i focus-flow`
-## Chestnut
+# Chestnut
 曾几何时，你有没有被反复无常的需求弄得心烦意乱。
 
 举个例子：一个商城代理模块，当代理要发展下线的时候，要通过二维码让新用户扫码，才可以绑定用户。
@@ -53,10 +53,10 @@ master.start()
 可读性变得更强，并且修改变动每条管道(use的回调函数之为管道)的时候，我们只需要关注ctx即可。
 
 当然，如果你不想按步就班，你大可next(FocusFlow|Number|String|Boolean)来进行定点执行或跨管道
-## Concept
-### 跨管道
+# Concept
+## 跨管道
 何为跨管道？因为有些情景可能不止一条管道分支，宛如git上的一条条不同的分支，正常流程上线用到master分支，但当你要处理bug的时候，有可能就需要建一个bug_dev分支了。同理，当我们的master管道出现正常流程之外的事情，我们可以在回调函数里面是用next(ff2, [sign]),就像git checkout ff2那样，让一个专门处理非正常流程的分支去处理这些逻辑，这样整个业务都变得侧层级分明。
-### 线程
+## 线程
 ```
 getList(){
   if(close) return 
@@ -90,13 +90,13 @@ __switch__：threadMax如果是一个容器，那么switch则是这个容器的�
 __life__：规定线程的寿命，每当回调函数使用next时，都会刷新线程的寿命。线程池会根据线程的寿命去清理掉那些过期的线程。
 
 __hand__：回调函数的全局this指向
-## explain
-### 基本管道
+# explain
+## 基本管道
 __success__：next()到底的时候就会触发该管道。当然，你也可以next(true)直接执行成功管道
 __fail__：next(false)的时候触发
 __end__：success和fail的下一个next就是end，而error则是触发完自己的回调函数后，会自动触发end
 __error__：捕获错误管道
-### 回调函数接受的参数
+## 回调函数接受的参数
 __ctx__：管道传递的上下文，ff.start(参数)的参数会合并到ctx上。
 
 $info：
@@ -112,7 +112,7 @@ __next__：可传递2个参数。
 * 第一个参数param是FocusFlow类型时，会进行跨管道（相当于FocusFlow的实例.start(当前ctx，第二个参数)），第二个参数重复以上行为
 ***
 __close__：清理当前执行线程，但线程是还会执行完任务
-### ff.start
+## ff.start
 有时候，当我们执行到某一段逻辑时，因为某些原因中断了流程。当我满足了该条件后，又不想重新由头到尾执行该管道分支，那应该怎么办？我想有同学大概能想到，start(ctx,sign)
 
 用小程序举个例子：
