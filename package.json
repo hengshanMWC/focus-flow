@@ -2,7 +2,7 @@
   "name": "focus-flow",
   "version": "1.0.0",
   "description": "让代码变成一条流",
-  "main": "src/index.js",
+  "main": "dist/focusFlow.es.js",
   "scripts": {
     "build": "node build/rollup.config.js",
     "docs": "jsdoc -c jsdoc.conf.json -t ./node_modules/ink-docstrap/template -R README.md  -d docs",
@@ -38,6 +38,7 @@
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-terser": "^1.0.1",
+    "rollup-plugin-uglify-es": "0.0.1",
     "source-map-support": "^0.5.12",
     "terser": "^3.17.0",
     "validate-npm-package-name": "^3.0.0"
