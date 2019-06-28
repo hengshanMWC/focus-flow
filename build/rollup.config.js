@@ -10,10 +10,9 @@ const resolve  = require('rollup-plugin-node-resolve')
 const cjs  = require('rollup-plugin-commonjs')
 const replace  = require('rollup-plugin-replace')
 const buble  = require("rollup-plugin-buble")
+const uglify  = require("rollup-plugin-uglify-es") // 压缩es6+代码
 let {version, name}  = require('../package.json')
-
 let moduleName = name
-
 // 检查是否是合法的 npm 包名
 if (!validateNpmPackageName(moduleName)) {
   throw new Error(`${moduleName} 不是一个合法的 npm 包名`)
@@ -84,9 +83,17 @@ const genConfig  = key => {
       file: dest,
       format,
       banner,
-      name: name || moduleName
+      name: name || moduleName,
     },
     plugins: [
+      uglify({
+        compress: {
+          pure_getters: true,
+          unsafe: true,
+          unsafe_comps: true,
+          warnings: false
+        }
+      }),
       // babel
       babel({
         babelrc: false,
