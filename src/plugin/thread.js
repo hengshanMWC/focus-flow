@@ -1,4 +1,4 @@
-import FocusFlow from './index.js'
+import FocusFlow from '../ff/constructor.js'
 export default class Thread {
 	constructor(ff, ctx){
 		this.ctx = Object.assign({}, ctx)
@@ -6,7 +6,6 @@ export default class Thread {
 		this.$close = this.close.bind(this)
     this.ff = ff
 		this.initInfo(ff)
-		
 	}
   /**
    * 初始化上下文的$info
@@ -30,17 +29,17 @@ export default class Thread {
 	* @param {String|Number|Boolean} sign 管道标记
 	* @private
 	*/
-	async next(ff, sign){
+	next(ff, sign){
 		if(ff instanceof FocusFlow) return this.span(ff, sign)
 		let $ff = this.ctx.$info.ff
 		this.active()
 		// if($ff.ram) this.active()
 		if(typeof ff === 'boolean'){
-      await $ff.run(this, ff)
+      $ff.run(this, ff)
 		} else if(ff){
-			await $ff.nextStart(this, ff)
+			$ff.nextStart(this, ff)
 		} else {
-			await $ff.run(this)
+			$ff.run(this)
 		}
 	}
   /**

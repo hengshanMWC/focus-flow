@@ -1,4 +1,8 @@
-import FF from '../../dist/focusFlow.es'
+import FF from '../../src'
+// test('test', () => {
+//   console.log(FF)
+//   console.log(new FF)
+// })
 // beforeAll(() => {
 //   jest.useFakeTimers()
 // })
@@ -116,6 +120,12 @@ test('switch&hand', () => {
     height: '30',
     sex: '1'
   }
+  let obj3 = {
+    fn () {
+      console.log(this)
+    },
+    c: 10
+  }
   let ff = new FF({
     hand: obj,
     life: 1000,
@@ -131,6 +141,7 @@ test('switch&hand', () => {
       expect(this).toBe(obj)
       next()
     })
+    .end(obj3.fn, obj3)
   ff.close()
   ff.start()
   ff.open()
