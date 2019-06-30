@@ -22,28 +22,17 @@ export default {
 	 * 打开线程池
 	 * @return this
 	 */
-  open() {
+  open () {
 		this.options.switch = true;
 		return this		
   },
-	/**
-   * 通过标记获取管道下标,如果是Number则直接返回
-   * @param {String|Number} sign 标记
-	 * @return {Number}
-	 * @private
-   */
-	matching(sign){
-		return typeof sign === 'number' 
-			? sign  
-			: this.pond.findIndex(obj => obj.sign === sign)
-	},
   /**
    * 创建线程
    * @param {Object} ctx 上下文
 	 * @return {Thread}
 	 * @private
    */
-	createThread(ctx){
+	newThread(ctx){
     let thread = new Thread(this, ctx)
 		this.threads.push(thread)
 		return thread
@@ -53,9 +42,10 @@ export default {
 	 * @param {Thread} thread 
 	 * @private
 	 */
-  closeThread(thread){
+  closeThread (thread) {
 		let index = this.threads.findIndex( obj => obj === thread)
 		this.threads.splice(index, 1 + index)
+		this.processNextMessage()
 	},
 	/**
 	 * 清空线程池，剩余的线程会执行完

@@ -1,8 +1,4 @@
 import FF from '../../src'
-// test('test', () => {
-//   console.log(FF)
-//   console.log(new FF)
-// })
 // beforeAll(() => {
 //   jest.useFakeTimers()
 // })
@@ -17,16 +13,6 @@ function getList(){
     resolve({data: list})
   })
 }
-test ('use', () => {
-  function fnNumber(ctx, next){
-    expect(ctx.number).toBe(1)
-    expect(ctx.$info.id + 1).toBe(FF._id)
-    next()
-  }
-  new FF()
-    .use(fnNumber)
-    .start({number: 1})
-})
 describe('provide basic', () => {
   let ff = null;
   function fnSuccess(ctx, next){
@@ -59,9 +45,6 @@ describe('provide basic', () => {
   test ('false', () => {
     ff.start(false, {text: 'fail'})
   })
-  test ('number', () => {
-    ff.start(1, {text: 'success'})
-  })
   test ('error', () => {
     ff
       .use('error', function(){
@@ -77,6 +60,10 @@ test('flow span', async done => {
     .use('wear', async function(ctx, next){
       expect(fn.mock.calls.length).toBe(0)
       ctx.res = await getList()
+      expect(ctx.res.data).toEqual(list)
+      next()
+    })
+    .use(async function(ctx, next){
       expect(ctx.res.data).toEqual(list)
       next()
     })
@@ -97,7 +84,7 @@ test('flow span', async done => {
     })
     .use(fn)
     .use(function(ctx, next, close){
-      expect.assertions(5)
+      expect.assertions(6)
       expect(fn.mock.calls.length).toBe(0)
       setTimeout(function(){
         next(ff2)
@@ -110,6 +97,7 @@ test('flow span', async done => {
     ]})
 })
 test('switch&hand', () => {
+  let index = 0
   let obj = {
     name: 'mwc',
     height: '179',
@@ -122,29 +110,46 @@ test('switch&hand', () => {
   }
   let obj3 = {
     fn () {
-      console.log(this)
+      expect(this.c).toBe(10)
     },
     c: 10
   }
   let ff = new FF({
     hand: obj,
     life: 1000,
-    threadMax: 1,
-    guard: true
+    threadMax: 2,
+    guard: true,
+    queue: true,
+    queueMax: 3
   })
+  ff
     .use(function(ctx, next){
       expect(this).not.toBe(obj)
       expect(this).toBe(obj2)
       next()
     }, obj2)
-    .use(function(ctx, next){
+    .use(async function(ctx, next){
+      await getList()
+      index++
       expect(this).toBe(obj)
       next()
     })
     .end(obj3.fn, obj3)
-  ff.close()
-  ff.start()
-  ff.open()
-  expect(ff.length).toBe(2)
-  ff.start()
+    .onFull(function(obj){
+      expect(this).toBe(obj)
+    }, ff)
+    .onQueueFull(function () {
+      expect(ff.queue.length).toBe(3)
+    })
+    .close()
+    .start()
+    .open()
+    .start()
+    .start()
+    .start()
+    .start()
+    .start()
+    .start()
+  expect(ff.length).toBe(2)  
+  expect(index).toBe(0)
 })
