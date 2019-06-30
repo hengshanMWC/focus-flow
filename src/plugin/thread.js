@@ -48,7 +48,7 @@ export default class Thread {
    * @param: {String|Number} 执行管道的标记
 	 * @private 
    */
-	span(ff, sign){
+	span (ff, sign) {
     this.close()
 		ff.start(this.ctx, sign)
 		return this;
@@ -62,5 +62,4 @@ export default class Thread {
 	close(){
     this.ff.closeThread(this)
 	}
-
 }

@@ -14,7 +14,6 @@ export default {
 			sign = this.pond.length
 		} else if(typeof sign === 'number'){
 			sign = this.pond.length//管道仓库的长度
-			console.log(sign)
     } else if (sign instanceof FocusFlow){
       //FocusFlow,this
       return this.docking(sign, callback)
@@ -31,7 +30,7 @@ export default {
 	 * @param {Function} callback 
 	 * @return this 
 	 */
-	error(callback, hand){
+	error(callback, hand  = this.options.hand){
 		let basic = this.basic
 		callback = this.redirect(callback, hand)    		
 		basic.error = async function (error, thread) {
@@ -62,7 +61,7 @@ export default {
 	 * @param {Function} callback 
 	 * @return this 
 	 */
-	end (callback, hand) {
+	end (callback, hand  = this.options.hand) {
 		let basic = this.basic
 		callback = this.redirect(callback, hand)    
 		basic.end = async thread => {
@@ -79,7 +78,7 @@ export default {
 	 * @return this
 	 * @private	 
 	 */
-	isState(state, callback, hand){
+	isState(state, callback, hand  = this.options.hand){
 		callback = this.redirect(callback, hand)    
 		this.basic[state] = async thread => {
 			thread.ctx.$info.index = null
