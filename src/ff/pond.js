@@ -28,6 +28,7 @@ export default {
   /**
 	 * 抛错管道
 	 * @param {Function} callback 
+	 * @param {Object} [hand = this.options.hand] 函数指向的this
 	 * @return this 
 	 */
 	error (callback, hand  = this.options.hand) {
@@ -43,6 +44,7 @@ export default {
   /**
 	 * 成功管道
 	 * @param {Function} callback 
+	 * @param {Object} [hand = this.options.hand] 函数指向的this
 	 * @return this 
 	 */
 	success (callback, hand) {
@@ -51,6 +53,7 @@ export default {
 	/**
 	 * 失败管道
 	 * @param {Function} callback 
+	 * @param {Object} hand 函数指向的this
 	 * @return this 
 	 */
 	fail (callback, hand) {
@@ -59,6 +62,7 @@ export default {
 	/**
 	 * 结束管道
 	 * @param {Function} callback 
+	 * @param {Object} [hand = this.options.hand] 函数指向的this
 	 * @return this 
 	 */
 	end (callback, hand  = this.options.hand) {
@@ -75,6 +79,7 @@ export default {
 	 * 成功失败的方法
 	 * @param {String} state 
 	 * @param {Function} callback 
+	 * @param {Object} [hand = this.options.hand] 函数指向的this
 	 * @return this
 	 * @private	 
 	 */
@@ -100,7 +105,7 @@ export default {
   /**
 	 * 改变this指向
 	 * @param {Function} callback 
-	 * @param {Object} [hand = this.options.hand] 
+	 * @param {Object} [hand = this.options.hand] 函数指向的this
 	 * @return {Function}
 	 * @private
 	 */
