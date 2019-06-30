@@ -3,7 +3,7 @@ export default {
   /**
    * 线程池溢满事件
    * @param {Function} callback 回调函数
-   * @param {Object} hand this
+   * @param {Object} [hand = this.options.hand] this
    * @return this
    */
   onFull (callback, hand = this.options.hand) {
@@ -14,7 +14,7 @@ export default {
   /**
    * 队列溢满事件
    * @param {Function} callback 回调函数
-   * @param {Object} hand this
+   * @param {Object} [hand = this.options.hand] this
    * @return this
    */
   onQueueFull (callback, hand = this.options.hand) {
