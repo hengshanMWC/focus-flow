@@ -96,7 +96,7 @@ test('flow span', async done => {
       '香蕉',
     ]})
 })
-test('switch&hand', () => {
+test('switch&hand&queue', () => {
   let index = 0
   let obj = {
     name: 'mwc',
@@ -135,21 +135,59 @@ test('switch&hand', () => {
       next()
     })
     .end(obj3.fn, obj3)
-    .onFull(function(obj){
-      expect(this).toBe(obj)
-    }, ff)
+    .onFull(function(obj) {
+      expect(ff).toBe(obj)
+    })
     .onQueueFull(function () {
       expect(ff.queue.length).toBe(3)
     })
+    // 关闭线程池
     .close()
+    // 进入队列
     .start()
+    // 关闭队列入口
+    .closeQueue()
+    // 无效
+    .start()
+  // 队列有1个
+  expect(ff.queue.length).toBe(1)
+  ff
+    // 打开线程池，队列中的任务进入线程池
     .open()
+    // 第二个进入线程池
     .start()
+    // 线程池已满并且队列入口被关闭，无效任务
     .start()
+  expect(ff.queue.length).toBe(0)
+  ff 
+    // 打开队伍入口
+    .openQueue()   
+    // 第一个进入队列 
     .start()
+    // 第二个进入队列
     .start()
+    // 第三个进入队列，队列已满
     .start()
+    // 无效任务
     .start()
+  expect(ff.queue.length).toBe(3)
+  ff
+    // 关闭队列的出口
+    .exportClosed()
+    // 清除线程池
+    .emptyThreads()
+  expect(ff.threads.length).toBe(0)  
+  expect(ff.queue.length).toBe(3)
+  ff
+    // 打开队列的入口
+    .exportOpen()
+  expect(ff.threads.length).toBe(2)  
+  expect(ff.queue.length).toBe(1)
+  ff
+    // 清空队列
+    .emptyQueue()
+  expect(ff.queue.length).toBe(0)  
   expect(ff.length).toBe(2)  
+  // 异步
   expect(index).toBe(0)
 })

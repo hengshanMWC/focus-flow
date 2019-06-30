@@ -5,7 +5,7 @@ export default {
 	 * @return {Boolean}
 	 */
 	inspect () {
-		if(!this.ram) {
+		if (!this.ram) {
       return !this.clean()
 		}
 		return false
@@ -14,7 +14,7 @@ export default {
 	 * 关闭线程池，之前的线程会继续执行
 	 * @return this
 	 */
-  close() {
+  close () {
 		this.options.switch = false;
 		return this
   },
@@ -24,6 +24,7 @@ export default {
 	 */
   open () {
 		this.options.switch = true;
+		this.processNextMessage()
 		return this		
   },
   /**
@@ -32,7 +33,7 @@ export default {
 	 * @return {Thread}
 	 * @private
    */
-	newThread(ctx){
+	newThread (ctx) {
     let thread = new Thread(this, ctx)
 		this.threads.push(thread)
 		return thread
@@ -51,8 +52,9 @@ export default {
 	 * 清空线程池，剩余的线程会执行完
 	 * @return this
 	 */
-	closeThreads(){
+	emptyThreads () {
 		this.threads = [];
+		this.processNextMessage()
 		return this
 	},
 	/**

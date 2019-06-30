@@ -4,6 +4,7 @@ export default class FocusFlow {
 		this.pond = [] // 管道仓库
 		this.threads = [] // 线程池
 		this.queue = [] // 队列
+		this.queueExit = true // 队列出口
 		this.event = {
 			full: null
 		}
