@@ -30,7 +30,7 @@ export default {
 	 * @param {Function} callback 
 	 * @return this 
 	 */
-	error(callback, hand  = this.options.hand){
+	error (callback, hand  = this.options.hand) {
 		let basic = this.basic
 		callback = this.redirect(callback, hand)    		
 		basic.error = async function (error, thread) {
@@ -45,7 +45,7 @@ export default {
 	 * @param {Function} callback 
 	 * @return this 
 	 */
-	success(callback, hand){
+	success (callback, hand) {
 		return this.isState('success', callback, hand)
 	},
 	/**
@@ -53,7 +53,7 @@ export default {
 	 * @param {Function} callback 
 	 * @return this 
 	 */
-	fail(callback, hand){
+	fail (callback, hand) {
 		return this.isState('fail', callback, hand)
 	},
 	/**
@@ -78,7 +78,7 @@ export default {
 	 * @return this
 	 * @private	 
 	 */
-	isState(state, callback, hand  = this.options.hand){
+	isState (state, callback, hand  = this.options.hand) {
 		callback = this.redirect(callback, hand)    
 		this.basic[state] = async thread => {
 			thread.ctx.$info.index = null
