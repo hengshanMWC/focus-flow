@@ -30,7 +30,10 @@ export default class FocusFlow {
     //水流（线程）必经之地
 		this.basic = {}
 		this
-    .error(function (error) {console.log(error)})//报错触发
+    .error(function (error, ctx, next) {
+			console.error(error)
+			next()
+		})//报错触发
 		.success(template)//sign为true
     .fail(template)//sign为false
 		.end(function () {})//sign为null

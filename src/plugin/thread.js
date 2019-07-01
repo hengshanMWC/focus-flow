@@ -4,7 +4,8 @@ export default class Thread {
 		this.ctx = Object.assign({}, ctx)
 		this.$next = this.next.bind(this)
 		this.$close = this.close.bind(this)
-    this.ff = ff
+		this.ff = ff
+		this.onceZero = true // start匹配不到就从0开始
 		this.initInfo(ff)
 	}
   /**
@@ -29,14 +30,14 @@ export default class Thread {
 	* @param {String|Number|Boolean} sign 管道标记
 	* @private
 	*/
-	next(ff, sign){
+	next (ff, sign) {
 		if(ff instanceof FocusFlow) return this.span(ff, sign)
 		let $ff = this.ctx.$info.ff
 		this.active()
 		// if($ff.ram) this.active()
 		if(typeof ff === 'boolean'){
       $ff.run(this, ff)
-		} else if(ff){
+		} else if(ff !== undefined && typeof ff !== 'boolean'){
 			$ff.nextStart(this, ff)
 		} else {
 			$ff.run(this)
