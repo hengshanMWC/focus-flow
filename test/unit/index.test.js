@@ -2,10 +2,11 @@ import FF from '../../src'
 // beforeAll(() => {
 //   jest.useFakeTimers()
 // })
-function fnError(error, ctx){
+function fnError(error, ctx, next){
   expect(error.name).toBe("ReferenceError")
   expect(ctx.text).toBe('error')
   ctx.text = 'null'
+  next()
 }
 let list = [{name: 'mwc'}]
 function getList(){
@@ -65,7 +66,7 @@ test('flow span', async done => {
     })
     .use(async function(ctx, next){
       expect(ctx.res.data).toEqual(list)
-      next()
+      next(234234234)
     })
   let ff3 = new FF()
     .use(fn)
@@ -190,4 +191,15 @@ test('switch&hand&queue', () => {
   expect(ff.length).toBe(2)  
   // 异步
   expect(index).toBe(0)
+})
+describe('100', () => {
+  test('error&sign', () => {
+    new FF()
+      .use((ctx, next) => {
+        // 故意触发error的默认钩子
+        asdasd
+        next(12)
+      })
+      .start(123)
+  })
 })
