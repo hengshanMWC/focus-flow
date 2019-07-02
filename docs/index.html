@@ -33,7 +33,7 @@
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html#clean">clean</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#closeQueue">closeQueue</a></li><li><a href="global.html#emptyQueue">emptyQueue</a></li><li><a href="global.html#emptyThreads">emptyThreads</a></li><li><a href="global.html#end">end</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#exportClosed">exportClosed</a></li><li><a href="global.html#exportOpen">exportOpen</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#inspect">inspect</a></li><li><a href="global.html#length">length</a></li><li><a href="global.html#onFull">onFull</a></li><li><a href="global.html#onQueueFull">onQueueFull</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#openQueue">openQueue</a></li><li><a href="global.html#queueFull">queueFull</a></li><li><a href="global.html#ram">ram</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#success">success</a></li><li><a href="global.html#use">use</a></li>
+					<li><a href="global.html#clean">clean</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#closeExit">closeExit</a></li><li><a href="global.html#closeQueue">closeQueue</a></li><li><a href="global.html#emptyQueue">emptyQueue</a></li><li><a href="global.html#emptyThreads">emptyThreads</a></li><li><a href="global.html#end">end</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#inspect">inspect</a></li><li><a href="global.html#length">length</a></li><li><a href="global.html#onFull">onFull</a></li><li><a href="global.html#onQueueFull">onQueueFull</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#openExit">openExit</a></li><li><a href="global.html#openQueue">openQueue</a></li><li><a href="global.html#queueFull">queueFull</a></li><li><a href="global.html#ram">ram</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#success">success</a></li><li><a href="global.html#use">use</a></li>
 				</ul>
 			</li>
 			
@@ -92,12 +92,12 @@
 <p><a href="https://hengshanmwc.github.io/focus-flow/">API Documentation</a></p>
 <h2>Features</h2>
 <ul>
-<li>将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，从而降低耦合度</li>
+<li>将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，从而函数间的降低耦合度</li>
 <li>模仿线程概念，实现节流</li>
 <li>支持async/await</li>
 </ul>
 <h2>Installing</h2>
-<p><code>npm i focus-flow</code></p>
+<p><code>npm i -S focus-flow</code></p>
 <h2>Chestnut</h2>
 <p>曾几何时，你有没有被反复无常的需求弄得心烦意乱。</p>
 <p>举个例子：一个商城代理模块，当代理要发展下线的时候，要通过二维码让新用户扫码，才可以绑定用户。</p>
@@ -134,6 +134,23 @@ master.start()
 </code></pre>
 <p>可读性变得更强，并且修改变动每条管道(use的回调函数之为管道)的时候，我们只需要关注ctx即可。</p>
 <p>当然，如果你不想按步就班，你大可next(FocusFlow|Number|String|Boolean)来进行定点执行或跨管道</p>
+<h2>Options</h2>
+<pre class="prettyprint source"><code>// 以下是默认配置
+new FF({
+  threadMax: 1, //最大线程数
+  switch: true, //是否开放线程池
+  life: 10000, //清理线程的周期，毫秒单位
+  hand: null, //函数this指向
+  queue: false, // 是否开启队列
+  queueMax: 10 // 队列上限
+})
+</code></pre>
+<p><strong>threadMax</strong>：用来限制threads的上限，当达到上限且其中线程都仍活跃，使用start就不会再创建成功，也就意味着该次的start无法成功执行</p>
+<p><strong>switch</strong>：threadMax如果是一个容器，那么switch则是这个容器的开关</p>
+<p><strong>life</strong>：规定线程的寿命，每当回调函数使用next时，都会刷新线程的寿命。线程池会根据线程的寿命去清理掉那些过期的线程。</p>
+<p><strong>hand</strong>：回调函数的全局this指向</p>
+<p><strong>queue</strong>：线程池满了之后的任务都会储存到队列中，线程池有空闲位置时，按照队列先进先出进入线程池中</p>
+<p><strong>queueMax</strong>：队列任务的上限</p>
 <h2>Concept</h2>
 <h3>跨管道</h3>
 <p>何为跨管道？因为有些情景可能不止一条管道分支，宛如git上的一条条不同的分支，正常流程上线用到master分支，但当你要处理bug的时候，有可能就需要建一个bug_dev分支了。同理，当我们的master管道出现正常流程之外的事情，我们可以在回调函数里面是用next(ff2, [sign]),就像git checkout ff2那样，让一个专门处理非正常流程的分支去处理这些逻辑，这样整个业务都变得侧层级分明。</p>
@@ -153,21 +170,30 @@ master.start()
 ff.start({接口参数})
 </code></pre>
 <p>每当ff使用start(成功使用)的时候，内部就会新建一条线程，该线程会负责该次start的请求。而ff中的threads是专门用来储存这些线程。</p>
-<pre class="prettyprint source"><code>//默认配置
-new FF({
-  threadMax: 1, //最大线程数
-  switch: true, //是否开放线程池
-  life: 10000, //清理线程的周期，毫秒单位
-  hand: null, //函数this指向
-})
-</code></pre>
-<p><strong>threadMax</strong>：用来限制threads的上限，当达到上限且其中线程都仍活跃，使用start就不会再创建成功，也就意味着该次的start无法成功执行</p>
-<p><strong>switch</strong>：threadMax如果是一个容器，那么switch则是这个容器的开关</p>
-<p><strong>life</strong>：规定线程的寿命，每当回调函数使用next时，都会刷新线程的寿命。线程池会根据线程的寿命去清理掉那些过期的线程。</p>
-<p><strong>hand</strong>：回调函数的全局this指向</p>
+<h3>队列</h3>
+<p>线程池溢出的任务都会储存到队列中，而队列中除了任务上限，还有入口和出口。</p>
+<p><strong>入口</strong>：线程池溢出的任务去向。</p>
+<ul>
+<li>closeQueue 关闭队列入口</li>
+<li>openQueue 打开队列入口</li>
+</ul>
+<p><strong>出口</strong>：线程池空闲后任务进入的方向</p>
+<ul>
+<li>closeExit 关闭队列出口</li>
+<li>openExit 打开队列出口</li>
+</ul>
+<h3>事件</h3>
+<p>callback(ctx, FocusFlow)</p>
+<ul>
+<li>onFull：线程池溢满事件</li>
+<li>onQueueFull：队列溢满事件</li>
+</ul>
 <h2>explain</h2>
 <h3>基本管道</h3>
-<p><strong>success</strong>：next()到底的时候就会触发该管道。当然，你也可以next(true)直接执行成功管道</p>
+<p>success,fail：callback(ctx, next, close)
+end：callback(ctx)
+error：callback(error, ctx, next, close)
+<strong>success</strong>：next()到底的时候就会触发该管道。当然，你也可以next(true)直接执行成功管道</p>
 <p><strong>fail</strong>：next(false)的时候触发</p>
 <p><strong>end</strong>：success和fail的下一个next就是end，而error则是触发完自己的回调函数后，会自动触发end</p>
 <p><strong>error</strong>：捕获错误管道</p>
@@ -201,13 +227,7 @@ export default master
   .use('myInfo', myInfo) //获取openid
   .use('register', register) //注册
 </code></pre>
-<p>当有用户没有授权微信用户信息的时候，我们从userInfo跳出，然后用某种方法（个人用发布订阅）触发出授权弹框让他们授权,点击授权后调master.start(用户数据,'code')，直接跳到code管道，然后进行接下来的逻辑。</p>
-<p>顺带一提授权弹框</p>
-<pre class="prettyprint source"><code>//刚刚学小程序的时候，每次页面都要弄个事件函数和布尔值去管理者个组件
-&lt;getUserInfo bindevent=&quot;&quot; hidden=&quot;&quot;>&lt;/getUserInfo>
-//后面用FocusFlow配合发布订阅完全解耦了页面和组件
-&lt;getUserInfo>&lt;/getUserInfo>
-</code></pre></article>
+<p>当有用户没有授权微信用户信息的时候，我们从userInfo跳出，然后用某种方法（个人用发布订阅）触发出授权弹框让他们授权,点击授权后调master.start(用户数据,'code')，直接跳到code管道，然后进行接下来的逻辑。</p></article>
     </section>
 
 
@@ -253,7 +273,7 @@ export default master
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a>
 	
-		on 2019-07-01T17:14:39+08:00
+		on 2019-07-02T18:06:31+08:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

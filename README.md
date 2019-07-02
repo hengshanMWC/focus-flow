@@ -5,11 +5,11 @@
 
 [API Documentation](https://hengshanmwc.github.io/focus-flow/)
 ## Features
-* 将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，从而降低耦合度
+* 将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，从而函数间的降低耦合度
 * 模仿线程概念，实现节流
 * 支持async/await
 ## Installing
-`npm i focus-flow`
+`npm i -S focus-flow`
 ## Chestnut
 曾几何时，你有没有被反复无常的需求弄得心烦意乱。
 
@@ -55,6 +55,29 @@ master.start()
 可读性变得更强，并且修改变动每条管道(use的回调函数之为管道)的时候，我们只需要关注ctx即可。
 
 当然，如果你不想按步就班，你大可next(FocusFlow|Number|String|Boolean)来进行定点执行或跨管道
+## Options
+```
+// 以下是默认配置
+new FF({
+  threadMax: 1, //最大线程数
+  switch: true, //是否开放线程池
+  life: 10000, //清理线程的周期，毫秒单位
+  hand: null, //函数this指向
+  queue: false, // 是否开启队列
+  queueMax: 10 // 队列上限
+})
+```
+__threadMax__：用来限制threads的上限，当达到上限且其中线程都仍活跃，使用start就不会再创建成功，也就意味着该次的start无法成功执行
+
+__switch__：threadMax如果是一个容器，那么switch则是这个容器的开关
+
+__life__：规定线程的寿命，每当回调函数使用next时，都会刷新线程的寿命。线程池会根据线程的寿命去清理掉那些过期的线程。
+
+__hand__：回调函数的全局this指向
+
+__queue__：线程池满了之后的任务都会储存到队列中，线程池有空闲位置时，按照队列先进先出进入线程池中
+
+__queueMax__：队列任务的上限
 ## Concept
 ### 跨管道
 何为跨管道？因为有些情景可能不止一条管道分支，宛如git上的一条条不同的分支，正常流程上线用到master分支，但当你要处理bug的时候，有可能就需要建一个bug_dev分支了。同理，当我们的master管道出现正常流程之外的事情，我们可以在回调函数里面是用next(ff2, [sign]),就像git checkout ff2那样，让一个专门处理非正常流程的分支去处理这些逻辑，这样整个业务都变得侧层级分明。
@@ -76,24 +99,25 @@ const ff = new FF()
 ff.start({接口参数})
 ```
 每当ff使用start(成功使用)的时候，内部就会新建一条线程，该线程会负责该次start的请求。而ff中的threads是专门用来储存这些线程。
-```
-//默认配置
-new FF({
-  threadMax: 1, //最大线程数
-  switch: true, //是否开放线程池
-  life: 10000, //清理线程的周期，毫秒单位
-  hand: null, //函数this指向
-})
-```
-__threadMax__：用来限制threads的上限，当达到上限且其中线程都仍活跃，使用start就不会再创建成功，也就意味着该次的start无法成功执行
+### 队列
+线程池溢出的任务都会储存到队列中，而队列中除了任务上限，还有入口和出口。
 
-__switch__：threadMax如果是一个容器，那么switch则是这个容器的开关
+__入口__：线程池溢出的任务去向。
+- closeQueue 关闭队列入口
+- openQueue 打开队列入口
 
-__life__：规定线程的寿命，每当回调函数使用next时，都会刷新线程的寿命。线程池会根据线程的寿命去清理掉那些过期的线程。
-
-__hand__：回调函数的全局this指向
+__出口__：线程池空闲后任务进入的方向
+- closeExit 关闭队列出口
+- openExit 打开队列出口
+### 事件
+callback(ctx, FocusFlow)
+- onFull：线程池溢满事件
+- onQueueFull：队列溢满事件
 ## explain
 ### 基本管道
+success,fail：callback(ctx, next, close)
+end：callback(ctx)
+error：callback(error, ctx, next, close)
 __success__：next()到底的时候就会触发该管道。当然，你也可以next(true)直接执行成功管道
 
 __fail__：next(false)的时候触发
@@ -131,14 +155,6 @@ export default master
   .use('register', register) //注册
 ```
 当有用户没有授权微信用户信息的时候，我们从userInfo跳出，然后用某种方法（个人用发布订阅）触发出授权弹框让他们授权,点击授权后调master.start(用户数据,'code')，直接跳到code管道，然后进行接下来的逻辑。
-
-顺带一提授权弹框
-```
-//刚刚学小程序的时候，每次页面都要弄个事件函数和布尔值去管理者个组件
-<getUserInfo bindevent="" hidden=""></getUserInfo>
-//后面用FocusFlow配合发布订阅完全解耦了页面和组件
-<getUserInfo></getUserInfo>
-```
 
 
 
