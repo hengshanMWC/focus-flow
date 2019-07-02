@@ -5,7 +5,7 @@ function processNextMessage () {
   if (this.ram) this.processNextMessage()
 }
 /**
- * 关闭队列，之前的队列会继续执行
+ * 关闭队列入口
  * @return this
  */
 function closeQueue () {
@@ -13,7 +13,7 @@ function closeQueue () {
   return this
 }
 /**
- * 打开队列
+ * 打开队列入口
  * @return this
  */
 function openQueue () {
@@ -29,18 +29,18 @@ function emptyQueue () {
   return this
 }
 /**
- * 队列出口封闭
+ * 关闭队列出口
  * @return this
  */
-function exportClosed () {
+function closeExit () {
   this.queueExit = false
   return this
 }
 /**
- * 队列出口打开
+ * 打开队列出口
  * @return this
  */
-function exportOpen () {
+function openExit () {
   this.queueExit = true
   this.processNextMessage()
   return this
@@ -50,6 +50,6 @@ export default {
   closeQueue,
   openQueue,
 	emptyQueue,
-  exportClosed,
-  exportOpen
+  closeExit,
+  openExit
 }

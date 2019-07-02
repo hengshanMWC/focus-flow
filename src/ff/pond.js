@@ -1,6 +1,7 @@
 import FocusFlow from './constructor'
 /**
  * 收集管道
+ * callback(ctx, next, close)
  * @param {String|Function|FocusFlow} sign 标记|回调函数|FocusFlow实例，用来合并管道函数
  * @param {Function|Object} callback 回调函数|函数this
  * @param {Object} [hand = this.options.hand]
@@ -26,6 +27,7 @@ function use (sign, callback, hand) {
 }
 /**
  * 抛错管道
+ * callback(error, ctx, next, close)
  * @param {Function} callback 
  * @param {Object} [hand = this.options.hand] 函数指向的this
  * @return this 
@@ -41,6 +43,7 @@ function error (callback, hand  = this.options.hand) {
 }
 /**
  * 成功管道
+ * callback(ctx, next, close)
  * @param {Function} callback 
  * @param {Object} [hand = this.options.hand] 函数指向的this
  * @return this 
@@ -50,6 +53,7 @@ function success (callback, hand) {
 }
 /**
  * 失败管道
+ * callback(ctx, next, close)
  * @param {Function} callback 
  * @param {Object} [hand = this.options.hand]
  * @return this 
@@ -59,6 +63,7 @@ function fail (callback, hand) {
 }
 /**
  * 结束管道
+ * callback(ctx)
  * @param {Function} callback 
  * @param {Object} [hand = this.options.hand] 函数指向的this
  * @return this 

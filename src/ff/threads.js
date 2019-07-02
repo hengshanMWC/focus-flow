@@ -10,7 +10,7 @@ function inspect () {
 	return false
 }
 /**
- * 关闭线程池，之前的线程会继续执行
+ * 关闭线程池，start不会再生成线程
  * @return this
  */
 function close () {
@@ -38,7 +38,7 @@ function newThread (ctx) {
 	return thread
 }
 /**
- * 关闭线程(关闭后还会继续执行后面next的方法)
+ * 关闭线程(不会阻断该线程线程继续执行)
  * @param {Thread} thread 
  * @private
  */
@@ -48,7 +48,7 @@ function closeThread (thread) {
 	this.processNextMessage()
 }
 /**
- * 清空线程池，剩余的线程会执行完
+ * 清空线程池，但不会阻断执行中的线程
  * @return this
  */
 function emptyThreads () {
