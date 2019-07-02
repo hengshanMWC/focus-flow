@@ -55,12 +55,12 @@ export default class Thread {
 		return this;
 	}
 	//更新线程寿命，防止被回收
-	active(){
+	active () {
 		let info = this.ctx.$info;
 		info.life = Date.now() + info.ff.options.life
 	}
 	//关闭线程
-	close(){
+	close () {
     this.ff.closeThread(this)
 	}
 }

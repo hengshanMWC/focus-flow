@@ -1,6 +1,7 @@
 // 参数都是一个实例
 /**
  * 线程池溢满事件
+ * callback(ctx, FocusFlow)
  * @param {Function} callback 回调函数
  * @param {Object} [hand = this.options.hand] this
  * @return this
@@ -12,6 +13,7 @@ function onFull (callback, hand = this.options.hand) {
 }
 /**
  * 队列溢满事件
+ * callback(ctx, FocusFlow)
  * @param {Function} callback 回调函数
  * @param {Object} [hand = this.options.hand] this
  * @return this

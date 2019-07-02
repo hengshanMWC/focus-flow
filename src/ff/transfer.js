@@ -68,11 +68,11 @@ async function run (thread, state) {
  */
 function spill (ctx, sign) {
 	if(this.inspect()) {
-		typeof this.event.full === 'function' && this.event.full(this)
+		typeof this.event.full === 'function' && this.event.full(ctx, this)
 		if (this.queueFull) {
 			this.queue.push({ctx, sign})
 		} else if (this.options.queue && typeof this.event.queueFull === 'function') {
-				this.event.queueFull(this)
+				this.event.queueFull(ctx, this)
 		}
 		return true
 	}
