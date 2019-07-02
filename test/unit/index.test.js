@@ -136,7 +136,7 @@ test('switch&hand&queue', () => {
       next()
     })
     .end(obj3.fn, obj3)
-    .onFull(function(obj) {
+    .onFull(function(ctx, obj) {
       expect(ff).toBe(obj)
     })
     .onQueueFull(function () {
@@ -174,14 +174,14 @@ test('switch&hand&queue', () => {
   expect(ff.queue.length).toBe(3)
   ff
     // 关闭队列的出口
-    .exportClosed()
+    .closeExit()
     // 清除线程池
     .emptyThreads()
   expect(ff.threads.length).toBe(0)  
   expect(ff.queue.length).toBe(3)
   ff
     // 打开队列的入口
-    .exportOpen()
+    .openExit()
   expect(ff.threads.length).toBe(2)  
   expect(ff.queue.length).toBe(1)
   ff
