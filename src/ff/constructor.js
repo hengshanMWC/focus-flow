@@ -1,13 +1,13 @@
 export default class FocusFlow {
 	static _id = 0; // 每次生成线程+1
+	pond = [] // 管道仓库
+	threads = [] // 线程池
+	queue = [] // 队列
+	queueExit = true // 队列出口
+	event = {
+		full: null
+	}
 	constructor(options = {}){
-		this.pond = [] // 管道仓库
-		this.threads = [] // 线程池
-		this.queue = [] // 队列
-		this.queueExit = true // 队列出口
-		this.event = {
-			full: null
-		}
     this.defaults(options)
     this.junction()
 	}
