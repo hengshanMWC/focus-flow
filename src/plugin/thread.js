@@ -1,11 +1,11 @@
 import FocusFlow from '../ff/constructor.js'
 export default class Thread {
+	$next = this.next.bind(this)
+	$close = this.close.bind(this)
+	onceZero = true // start匹配不到就从0开始
 	constructor(ff, ctx){
 		this.ctx = Object.assign({}, ctx)
-		this.$next = this.next.bind(this)
-		this.$close = this.close.bind(this)
 		this.ff = ff
-		this.onceZero = true // start匹配不到就从0开始
 		this.initInfo(ff)
 	}
   /**
