@@ -57,6 +57,7 @@ export default class Thread {
 	//更新线程寿命，防止被回收
 	active () {
 		let info = this.ctx.$info;
+		if (info.life === -1) return
 		info.life = Date.now() + info.ff.options.life
 	}
 	//关闭线程

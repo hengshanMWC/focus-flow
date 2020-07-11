@@ -62,7 +62,10 @@ function emptyThreads () {
  */
 function clean () {
 	let oldLen = this.threads.length
-	this.threads = this.threads.filter(thread => thread.ctx.$info.life > Date.now())
+	this.threads = this.threads.filter(thread => {
+		if (thread.ctx.$info.life === -1) return true 
+		return thread.ctx.$info.life > Date.now()
+	})
 	return oldLen < this.threads.length
 }
 export default {
