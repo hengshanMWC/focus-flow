@@ -5,8 +5,8 @@
 
 [API Documentation](https://hengshanmwc.github.io/focus-flow/)
 ## Features
-* 将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，从而函数间的降低耦合度
-* 模仿线程概念，实现节流
+* 将后端中间件方式移植到前端，通过维护ctx上下文来处理业务逻辑，降低函数间的耦合
+* 实现节流，队列，池等概念
 * 支持async/await
 ## Installing
 `npm i -S focus-flow`
@@ -61,7 +61,7 @@ master.start()
 new FF({
   threadMax: 1, //最大线程数
   switch: true, //是否开放线程池
-  life: 10000, //清理线程的周期，毫秒单位
+  life: -1, //清理线程的周期，毫秒单位, -1为永生
   hand: null, //函数this指向
   queue: false, // 是否开启队列
   queueMax: 10 // 队列上限
