@@ -16,6 +16,9 @@
     "flow",
     "thread"
   ],
+  "files": [
+    "/dist"
+  ],
   "author": "mwc",
   "repository": {
     "type": "git",
