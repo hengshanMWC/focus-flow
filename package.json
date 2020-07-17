@@ -4,6 +4,7 @@
   "description": "让代码变成一条流",
   "main": "dist/focusFlow.cjs.min.js",
   "module": "dist/focusFlow.es.min.js",
+  "browser": "dist/focusFlow.global.min.js",
   "scripts": {
     "build": "node build/rollup.config.js",
     "docs": "jsdoc -c jsdoc.conf.json -t ./node_modules/ink-docstrap/template -R README.md  -d docs",
