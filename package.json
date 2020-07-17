@@ -1,6 +1,6 @@
 {
   "name": "focus-flow",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "让代码变成一条流",
   "main": "dist/focusFlow.cjs.js",
   "model": "dist/focusFlow.es.js",
