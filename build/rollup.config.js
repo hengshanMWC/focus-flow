@@ -35,7 +35,7 @@ const builds = {
   'es': {
     entry: 'src/index.js',
     // 当文件名包含 .min 时将会自动启用 terser 进行压缩
-    dest: `dist/${moduleName}.es.js`,
+    dest: `dist/${moduleName}.es.min.js`,
     /* rollup 支持 5 种打包类型
       - amd   amd 规范
       - cjs   CommonJS 规范
@@ -54,7 +54,7 @@ const builds = {
   'cjs': {
     entry: 'src/index.js',
     // 当文件名包含 .min 时将会自动启用 terser 进行压缩
-    dest: `dist/${moduleName}.cjs.js`,
+    dest: `dist/${moduleName}.cjs.min.js`,
     /* rollup 支持 5 种打包类型
       - amd   amd 规范
       - cjs   CommonJS 规范
