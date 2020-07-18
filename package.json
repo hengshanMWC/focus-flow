@@ -3,7 +3,7 @@
   "version": "1.2.6",
   "description": "让代码变成一条流",
   "main": "dist/focusFlow.cjs.min.js",
-  "module": "dist/focusFlow.es.min.js",
+  "model": "dist/focusFlow.es.min.js",
   "browser": "dist/focusFlow.global.js",
   "scripts": {
     "build": "node build/rollup.config.js",
@@ -18,7 +18,7 @@
     "thread"
   ],
   "files": [
-    "/dist"
+    "dist/"
   ],
   "author": "mwc",
   "repository": {

@@ -1,4 +1,6 @@
-import FF from '../../src'
+// import FocusFlow from '../../dist/focusFlow.es.min.js'
+import FocusFlow from '../../src'
+// const FocusFlow = require('../../dist/focusFlow.cjs.min')
 // beforeAll(() => {
 //   jest.useFakeTimers()
 // })
@@ -34,7 +36,8 @@ describe('provide basic', () => {
     expect(ctx.$info.index).toBeNull()
   }
   beforeEach(() => {
-    ff = new FF()
+    FocusFlow
+    ff = new FocusFlow()
       .error(fnError)
       .success(fnSuccess)
       .fail(fnFail)
@@ -57,7 +60,7 @@ describe('provide basic', () => {
 })
 test('flow span', async done => {
   const fn = jest.fn()
-  let ff4 = new FF()
+  let ff4 = new FocusFlow()
     .use('wear', async function(ctx, next){
       expect(fn.mock.calls.length).toBe(0)
       ctx.res = await getList()
@@ -68,16 +71,16 @@ test('flow span', async done => {
       expect(ctx.res.data).toEqual(list)
       next(234234234)
     })
-  let ff3 = new FF()
+  let ff3 = new FocusFlow()
     .use(fn)
     .use(ff4)
-  let ff2 = new FF()
+  let ff2 = new FocusFlow()
     .use(function(ctx, next){
       expect(ctx.list).toHaveLength(3)
       next(ff3, 'wear')
     })
     .use(fn)
-  new FF()
+  new FocusFlow()
     .use(function({ list }, next){
       expect(list).toHaveLength(2)
       list.push('锤子')
@@ -115,7 +118,7 @@ test('switch&hand&queue', () => {
     },
     c: 10
   }
-  let ff = new FF({
+  let ff = new FocusFlow({
     hand: obj,
     life: 1000,
     threadMax: 2,
@@ -194,7 +197,7 @@ test('switch&hand&queue', () => {
 })
 describe('100', () => {
   test('error&sign', () => {
-    new FF()
+    new FocusFlow()
       .use((ctx, next) => {
         // 故意触发error的默认钩子
         asdasd
