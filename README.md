@@ -9,7 +9,13 @@
 * 实现节流，队列，池等概念
 * 支持async/await
 ## Installing
-`npm i -S focus-flow`
+```
+// npm
+npm i -S focus-flow
+import FocusFlow from 'focus-flow'
+// script
+<script src="https://unpkg.com/focus-flow/dist/focusFlow.js"></script>
+```
 ## Chestnut
 曾几何时，你有没有被反复无常的需求弄得心烦意乱。
 

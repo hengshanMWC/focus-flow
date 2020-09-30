@@ -73,7 +73,7 @@ const builds = {
   'iife': {
     entry: 'src/index.js',
     // 当文件名包含 .min 时将会自动启用 terser 进行压缩
-    dest: `dist/${moduleName}.global.js`,
+    dest: `dist/${moduleName}.js`,
     name: 'FocusFlow',
     /* rollup 支持 5 种打包类型
       - amd   amd 规范
