@@ -1,5 +1,5 @@
 export default class FocusFlow {
-	static _id = 0; // 每次生成线程+1
+	static _number = 0; // 每次生成线程+1,目前只是做一个记录
 	pond = [] // 管道仓库
 	threads = [] // 线程池
 	queue = [] // 队列

@@ -15,7 +15,7 @@ export default class Thread {
    */
 	initInfo(ff){
 		let $info = {
-			id: FocusFlow._id++,//线程id
+			id: FocusFlow._number++,//线程id
 			ff,
 			index: 0,//从0开始
 		}
