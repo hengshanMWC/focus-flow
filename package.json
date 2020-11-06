@@ -18,7 +18,9 @@
     "thread"
   ],
   "files": [
-    "dist/"
+    "dist/",
+    "README.md",
+    "src/"
   ],
   "author": "mwc",
   "repository": {
