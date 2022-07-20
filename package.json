@@ -48,7 +48,7 @@
     "rollup-plugin-terser": "^1.0.1",
     "rollup-plugin-uglify-es": "0.0.1",
     "source-map-support": "^0.5.12",
-    "terser": "^3.17.0",
+    "terser": "^4.8.1",
     "validate-npm-package-name": "^3.0.0"
   },
   "dependencies": {}
